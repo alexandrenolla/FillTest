@@ -8,14 +8,7 @@
 
 - ## Instalação e Execução
 
-1. Clone o repositório e acesse o diretório do aplicativo:
-
-```bash
-$ git clone https://github.com/alexandrenolla/FillTest
-$ cd app
-```
-
-2. Execute o MySql para receber nova conexão.
+1. Execute o MySql para receber nova conexão.
 
   a) Se estiver no Windows execute o comando:
   ```
@@ -29,6 +22,13 @@ $ cd app
   ```
   $ sudo service mysql start
   ```
+
+2. Clone o repositório e acesse o diretório do aplicativo:
+
+```bash
+$ git clone https://github.com/alexandrenolla/FillTest
+$ cd app
+```
 
 3. Instale as dependências executando o comando:
 
