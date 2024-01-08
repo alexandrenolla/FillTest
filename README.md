@@ -36,10 +36,16 @@ $ cd app
  dotnet build
 ```
 
-4. Execute o comando:
+4. Gerar o schema das tabelas populadas executando o comando:
+
+```
+ dotnet ef database update
+```
+
+5. Execute o comando:
 
 ```
  dotnet run
 ```
 
-5. Acesse o localhost indicado no terminal.
+6. Acesse o localhost indicado no terminal.
