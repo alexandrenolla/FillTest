@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+@{
+}
+
+<h2 class="text-center mb-5">List of Properties</h2>
+
+<table class="table">
+    <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Neighborhood</th>
+        <th>Bedroom Quantity</th>
+        <th>Business Type</th>
+        <th>Address</th>
+        <th>Images</th>
+    </tr>
+
+    @foreach(var realState in Model.Properties)
+    {
+        <tr>
+            <td>@realState.Title</td>
+            <td>R$@(string.Format("{0:N2}", realState.Price))</td>
+            <td>@realState.Neighborhood</td>
+            <td>@realState.BedroomQuantity</td>
+            <td>@realState.BusinessType</td>
+            <td>@realState.Address</td>
+            <td>
+                @foreach(var image in realState.RealStateImages)
+                {
+                    <img src="~/photos/@image.ImageFileName" alt="Real Estate Image" width="300">
+                }
+            </td>
+        </tr>
+    }
+</table>

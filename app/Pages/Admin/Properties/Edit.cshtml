@@ -1,0 +1,114 @@
+@page
+@model app.Pages.Admin.Properties.EditModel
+@{
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">Edit Product</h2>
+
+        @if (Model.errorMessage.Length > 0)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@Model.errorMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else if (Model.successMessage.Length > 0)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@Model.successMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">ID</label>
+                <div class="col-sm-8">
+                    <input readonly class="form-control-plaintext" value="@Model.RealState.Id">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Title</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="RealStateDTO.Title">
+                    <span class="text-danger" asp-validation-for="RealStateDTO.Title"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Price</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="RealStateDTO.Price">
+                    <span class="text-danger" asp-validation-for="RealStateDTO.Price"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Neighborhood</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="RealStateDTO.Neighborhood">
+                    <span class="text-danger" asp-validation-for="RealStateDTO.Neighborhood"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Bedroom Quantity</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="RealStateDTO.BedroomQuantity">
+                    <span class="text-danger" asp-validation-for="RealStateDTO.BedroomQuantity"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Business Type</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="RealStateDTO.BusinessType">
+                        <option value="Aluguel">Aluguel</option>
+                        <option value="Venda">Venda</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Address</label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" asp-for="RealStateDTO.Address"></textarea>
+                    <span class="text-danger" asp-validation-for="RealStateDTO.Address"></span>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for=""></label>
+                <div class="col-sm-8">
+                @if (Model.RealState != null)
+                {
+                    @foreach(var image in Model.RealState.RealStateImages)
+                    {
+                        <img src="~/photos/@image.ImageFileName" alt="Real Estate Image" width="250">
+                    }
+                }
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" for="">Images</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="RealStateDTO.ImageFile" type="file" multiple>
+                    <span class="text-danger" asp-validation-for="RealStateDTO.ImageFile"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" href="/Admin/Properties/Index">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
