@@ -29,6 +29,10 @@ namespace app.Models
 
         [Column(TypeName = "VARCHAR"), Required, StringLength(300, MinimumLength = 4)]
         public string Address { get; set; }
+
+        public decimal Latitude { get; set; }
+
+        public decimal Longitude { get; set; }
         
         // Relacionamento
         public virtual List<RealStateImage> RealStateImages { get; set; }

@@ -1,0 +1,107 @@
+@page
+@model DetailsModel
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@{
+    ViewData["Title"] = "Details";
+}
+
+<link rel="stylesheet" href="~/css/details.css" asp-append-version="true">
+
+<h2 class="text-center mb-5">Property Details</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var image in Model.Property.RealStateImages)
+                    {
+                        <div class="carousel-item @(image == Model.Property.RealStateImages.First() ? "active" : "")">
+                            <img src="~/photos/@image.ImageFileName" class="d-block w-100" alt="Real Estate Image">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4" id="details">
+            <h3>@Model.Property.Title</h3>
+            <p>
+                <strong>Price:</strong> @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}", Model.Property.Price))<br />
+                <strong>Neighborhood:</strong> @Model.Property.Neighborhood<br />
+                <strong>Type:</strong> @Model.Property.BusinessType<br />
+                <strong>Rooms:</strong> @Model.Property.BedroomQuantity<br />
+                <strong>Address:</strong> @Model.Property.Address
+            </p>
+        </div>
+    </div>
+
+    <hr />
+</div>
+<h3>Location</h3>
+<div id="mapCanvasDetails"></div>
+
+@section scripts {
+    <script>
+        function initMapDetails() {
+            var map;
+            var bounds = new google.maps.LatLngBounds();
+            var mapOptions = {
+                mapTypeId: 'roadmap'
+            };
+
+            // Display a map on the web page
+            map = new google.maps.Map(document.getElementById("mapCanvasDetails"), mapOptions);
+            map.setTilt(50);
+
+            // Single marker location, latitude, and longitude for the detailed property
+            var marker = ['@Model.Property.Address', @Model.Property.Latitude, @Model.Property.Longitude];
+
+            // Info window content for the detailed property
+            var infoWindowContent = ['<div class="info_content">' +
+                '<h5>@Model.Property.Title</h5>' +
+                '<h6>Type: @Model.Property.BusinessType</h6>' +
+                '<h6>Rooms: @Model.Property.BedroomQuantity</h6>' +
+                '<h7>@Model.Property.Address</h7>' +
+                '</div>'
+            ];
+
+            // Add the marker to the map
+            var infoWindow = new google.maps.InfoWindow(), position = new google.maps.LatLng(marker[1], marker[2]);
+            bounds.extend(position);
+            var detailedMarker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: marker[0]
+            });
+
+            // Add info window to marker    
+            google.maps.event.addListener(detailedMarker, 'click', function () {
+                infoWindow.setContent(infoWindowContent[0]);
+                infoWindow.open(map, detailedMarker);
+            });
+
+            // Center the map to fit the detailed marker on the screen
+            map.fitBounds(bounds);
+
+            // Set zoom level
+            var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function (event) {
+                this.setZoom(14);
+                google.maps.event.removeListener(boundsListener);
+            });
+        }
+
+        window.onload = function () {
+            initMapDetails();
+        };
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMapDetails"
+            async defer></script>
+}

@@ -1,6 +1,6 @@
 using app.Models;
 using app.Services;
-using Microsoft.AspNetCore.Mvc;
+using app.Utilites.PaginatedList;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,19 +10,47 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly EstateAgencyDbContext context;
-    public List<RealState> Properties { get; set; } = new List<RealState>(); 
-
+    public PaginatedList<RealState> Properties { get; set; }
+    public List<RealState> AllProperties { get; set; }
+    
     public IndexModel(ILogger<IndexModel> logger, EstateAgencyDbContext context)
     {
         _logger = logger;
         this.context = context;
     }
 
-    public void OnGet()
+    public async Task OnGetAsync(string searchString, decimal? minPrice, decimal? maxPrice, int? pageIndex)
     {
-        Properties = context.Properties
+        IQueryable<RealState> query = context.Properties
                 .Include(p => p.RealStateImages)
-                .OrderByDescending(p => p.Id)
-                .ToList();
+                .OrderByDescending(p => p.Id);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(p =>
+                    p.Title.Contains(searchString) ||
+                    p.Neighborhood.Contains(searchString) ||
+                    p.BusinessType.Contains(searchString) ||
+                    p.Address.Contains(searchString)
+                );
+                pageIndex = 1;
+            }
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            AllProperties = await query.AsNoTracking().ToListAsync();
+            
+            int pageSize = 3;
+            Properties = await PaginatedList<RealState>.CreateAsync(
+                query.AsNoTracking(), pageIndex ?? 1, pageSize);
+
     }
 }

@@ -1,10 +1,11 @@
 @page
 @model app.Pages.Admin.Properties.CreateModel
 @{
+    ViewData["Title"] = "Create Property";
 }
 
 <div class="row">
-    <div class="col-md-8 mx-auto rounded border p-3">
+    <div class="col-md-8 mx-auto rounded border p-3 custom-card shadow">
         <h2 class="text-center mb-5">New Property</h2>
 
         @if (Model.errorMessage.Length > 0)

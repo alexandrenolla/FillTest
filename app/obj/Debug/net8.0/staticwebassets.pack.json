@@ -5,6 +5,14 @@
       "PackagePath": "staticwebassets/app.bundle.scp.css"
     },
     {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/css/details.css",
+      "PackagePath": "staticwebassets/css/details.css"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/css/index.css",
+      "PackagePath": "staticwebassets/css/index.css"
+    },
+    {
       "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
@@ -245,16 +253,20 @@
       "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
     },
     {
-      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/20240108135701403.png",
-      "PackagePath": "staticwebassets/photos/20240108135701403.png"
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/32f2a7dc-b28c-40ec-85f6-98a4e7e00cb5.jpeg",
+      "PackagePath": "staticwebassets/photos/32f2a7dc-b28c-40ec-85f6-98a4e7e00cb5.jpeg"
     },
     {
-      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/20240108135931158.png",
-      "PackagePath": "staticwebassets/photos/20240108135931158.png"
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/7606db4c-94e0-48c8-b778-2469ee2c11db.jpeg",
+      "PackagePath": "staticwebassets/photos/7606db4c-94e0-48c8-b778-2469ee2c11db.jpeg"
     },
     {
-      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/20240108140133877.jpeg",
-      "PackagePath": "staticwebassets/photos/20240108140133877.jpeg"
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/b21dd869-6c7a-479a-b2cf-822b1625f18b.jpeg",
+      "PackagePath": "staticwebassets/photos/b21dd869-6c7a-479a-b2cf-822b1625f18b.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/bcadd85e-96e8-4a0d-9a9c-cabcff82a9c8.png",
+      "PackagePath": "staticwebassets/photos/bcadd85e-96e8-4a0d-9a9c-cabcff82a9c8.png"
     },
     {
       "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa.jpeg",
@@ -271,6 +283,18 @@
     {
       "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa12.jpeg",
       "PackagePath": "staticwebassets/photos/casa12.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa13.jpeg",
+      "PackagePath": "staticwebassets/photos/casa13.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa14.jpeg",
+      "PackagePath": "staticwebassets/photos/casa14.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa15.jpeg",
+      "PackagePath": "staticwebassets/photos/casa15.jpeg"
     },
     {
       "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa2.jpeg",
@@ -303,6 +327,14 @@
     {
       "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/casa9.jpeg",
       "PackagePath": "staticwebassets/photos/casa9.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/df60c99e-fe88-48ad-acef-657fe13ac84c.jpeg",
+      "PackagePath": "staticwebassets/photos/df60c99e-fe88-48ad-acef-657fe13ac84c.jpeg"
+    },
+    {
+      "Id": "/Users/alexandrenolla/Desktop/FillTest/app/wwwroot/photos/f7a56cbc-b4db-4568-a91b-75b202d9188f.jpeg",
+      "PackagePath": "staticwebassets/photos/f7a56cbc-b4db-4568-a91b-75b202d9188f.jpeg"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.app.Microsoft.AspNetCore.StaticWebAssets.props",

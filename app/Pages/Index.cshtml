@@ -1,36 +1,142 @@
 ﻿@page
 @model IndexModel
+@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc.RazorPages
 @{
+    ViewData["Title"] = "Home";
 }
+<link rel="stylesheet" href="~/css/index.css" asp-append-version="true">
 
 <h2 class="text-center mb-5">List of Properties</h2>
 
-<table class="table">
-    <tr>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Neighborhood</th>
-        <th>Bedroom Quantity</th>
-        <th>Business Type</th>
-        <th>Address</th>
-        <th>Images</th>
-    </tr>
+<form method="get" class="mb-4">
+    <div class="d-flex gap-2">
+        <div class="form-group">
+            <label for="searchString">Search:</label>
+            <input type="text" id="searchString" name="searchString" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="minPrice">Min Price:</label>
+            <input type="text" id="minPrice" name="minPrice" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="maxPrice">Max Price:</label>
+            <input type="text" id="maxPrice" name="maxPrice" class="form-control" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-search">Search</button>
+</form>
 
+<div class="card-container row">
     @foreach(var realState in Model.Properties)
     {
-        <tr>
-            <td>@realState.Title</td>
-            <td>R$@(string.Format("{0:N2}", realState.Price))</td>
-            <td>@realState.Neighborhood</td>
-            <td>@realState.BedroomQuantity</td>
-            <td>@realState.BusinessType</td>
-            <td>@realState.Address</td>
-            <td>
-                @foreach(var image in realState.RealStateImages)
-                {
-                    <img src="~/photos/@image.ImageFileName" alt="Real Estate Image" width="300">
-                }
-            </td>
-        </tr>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <img src="~/photos/@realState.RealStateImages.FirstOrDefault()?.ImageFileName" alt="Real Estate Image" class="card-img-top custom-card-img">
+                <div class="card-body">
+                    <h5 class="card-title">@realState.Title</h5>
+                    <p class="card-text">
+                        Price: @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}", realState.Price))<br />
+                        Neighborhood: @realState.Neighborhood<br />
+                        <a class="btn btn-sm mt-2 btn-details" href="/Details?id=@realState.Id">Details</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     }
-</table>
+</div>
+
+@{
+    var prevDisabled = !Model.Properties.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Properties.HasNextPage ? "disabled" : "";
+}
+
+<div class="text-center">
+    <a asp-page="./Index"
+    asp-route-pageIndex="@(Model.Properties.PageIndex - 1)"
+    class="btn btn-primary btn-pagination @prevDisabled">
+    Previous
+    </a>
+    <a asp-page="./Index"
+    asp-route-pageIndex="@(Model.Properties.PageIndex + 1)"
+    class="btn btn-primary btn-pagination @nextDisabled">
+    Next
+    </a>
+</div>
+
+<div id="mapCanvas"></div>
+
+@section scripts {
+    <script>
+        function initMap() {
+            var map;
+            var bounds = new google.maps.LatLngBounds();
+            var mapOptions = {
+                mapTypeId: 'roadmap'
+            };
+                            
+            // Display a map on the web page
+            map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+            map.setTilt(50);
+                
+            // Multiple markers location, latitude, and longitude
+            var markers = [
+            @foreach(var realState in Model.AllProperties)
+            {
+                @Html.Raw($"['{realState.Address}', {realState.Latitude}, {realState.Longitude}],")
+            }
+            ];
+
+                                
+            // Info window content
+            var infoWindowContent = [
+            @foreach(var realState in Model.AllProperties)
+            {
+                <text>
+                    ['<div class="info_content">' +
+                    '<h5>@realState.Title</h5>' +
+                    '<h6>Type: @realState.BusinessType</h6>' +
+                    '<h6>Rooms: @realState.BedroomQuantity</h6>' +
+                    '<h7>@realState.Address</h7>' +
+                    '</div>'],
+                </text>
+            }
+            ];
+
+            // Add multiple markers to map
+            var infoWindow = new google.maps.InfoWindow(), marker, i;
+            
+            // Place each marker on the map  
+            for( i = 0; i < markers.length; i++ ) {
+                var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+                bounds.extend(position);
+                marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: markers[i][0]
+                });
+                
+                // Add info window to marker    
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infoWindow.setContent(infoWindowContent[i][0]);
+                        infoWindow.open(map, marker);
+                    }
+                })(marker, i));
+
+                // Center the map to fit all markers on the screen
+                map.fitBounds(bounds);
+            }
+
+            // Set zoom level
+            var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+                this.setZoom(14);
+                google.maps.event.removeListener(boundsListener);
+            });
+        }
+
+    window.initMap = initMap;
+    
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMap" async defer></script>
+}

@@ -1,51 +1,59 @@
 @page
 @model app.Pages.Admin.Properties.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@* @attribute [Authorize] *@
 @{
+    ViewData["Title"] = "Admin";
 }
 
-<h2 class="text-center mb-5">List of Properties</h2>
+<h2 class="text-center mb-5">List of Properties for Admin</h2>
 
 <div class="row mb-5">
     <div class="col">
-        <a class="btn btn-primary" href="/Admin/Properties/Create">New RealState</a>
+        <a class="btn btn-success" href="/Admin/Properties/Create">New RealState</a>
     </div>
     <div class="col">
 
     </div>
 </div>
 
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Neighborhood</th>
-        <th>Bedroom Quantity</th>
-        <th>Business Type</th>
-        <th>Address</th>
-        <th>Images</th>
-        <th>Edit</th>
-    </tr>
+<form method="get" class="mb-4">
+    <div class="d-flex gap-2">
+        <div class="form-group">
+            <label for="searchString">Search:</label>
+            <input type="text" id="searchString" name="searchString" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="minPrice">Min Price:</label>
+            <input type="text" id="minPrice" name="minPrice" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="maxPrice">Max Price:</label>
+            <input type="text" id="maxPrice" name="maxPrice" class="form-control" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-search">Search</button>
+</form>
 
+<div class="card-container row">
     @foreach(var realState in Model.Properties)
     {
-        <tr>
-            <td>@realState.Id</td>
-            <td>@realState.Title</td>
-            <td>R$@(string.Format("{0:N2}", realState.Price))</td>
-            <td>@realState.Neighborhood</td>
-            <td>@realState.BedroomQuantity</td>
-            <td>@realState.BusinessType</td>
-            <td>@realState.Address</td>
-            <td>
-                @foreach(var image in realState.RealStateImages)
-                {
-                    <img src="~/photos/@image.ImageFileName" alt="Real Estate Image" width="300">
-                }
-            </td>
-            <td style="white-space:nowrap">
-                <a class="btn btn-primary btn-sm" href="/Admin/Properties/Edit?id=@realState.Id">Edit</a>
-            </td>
-        </tr>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <img src="~/photos/@realState.RealStateImages.FirstOrDefault()?.ImageFileName" alt="Real Estate Image" class="card-img-top custom-card-img">
+                <div class="card-body">
+                    <h5 class="card-title">@realState.Title</h5>
+                    <p class="card-text">
+                        Id: @realState.Id <br />
+                        Price: R$@(string.Format("{0:N2}", realState.Price)) <br />
+                        Neighborhood: @realState.Neighborhood <br />
+                        Bedrooms: @realState.BedroomQuantity <br />
+                        Business Type: @realState.BusinessType <br />
+                        @realState.Address <br />
+                        <a class="btn btn-warning btn-md mt-2" href="/Admin/Properties/Edit?id=@realState.Id">Edit</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     }
-</table>
+</div>

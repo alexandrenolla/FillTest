@@ -1,21 +1,20 @@
 using app.Services;
+using app.Utilites.GeoCoding;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<GoogleMapsGeoCoding>();
 
 var connectionString = "Server=localhost;User ID=root;Password=root;Database=EstateAgencyDb;";
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 
-builder.Services.AddDbContext<EstateAgencyDbContext>(options => 
+builder.Services.AddDbContext<EstateAgencyDbContext>(options =>
 {
-    builder.Configuration.GetConnectionString(connectionString);
     options.UseMySql(connectionString, serverVersion);
 });
-
-//builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString(connectionString)!);
 
 var app = builder.Build();
 
@@ -23,7 +22,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -32,8 +30,21 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+// Remove the authentication and authorization middleware
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var dbContext = serviceProvider.GetRequiredService<EstateAgencyDbContext>();
+
+    dbContext.Database.Migrate();
+
+    // Remove the SeedData call
+    // await SeedData.EnsureSeedData(serviceProvider, userManager);
+}
 
 app.Run();

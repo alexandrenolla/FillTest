@@ -1,16 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using app.Models;
 using Microsoft.EntityFrameworkCore;
+using app.Utilites.GeoCoding;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace app.Services
 {
-    public class EstateAgencyDbContext : DbContext
-    {
-        // Construtor
-        public EstateAgencyDbContext(DbContextOptions options) : base(options) { }
+    public class EstateAgencyDbContext : IdentityDbContext<IdentityUser>
+    {   
+        private readonly GoogleMapsGeoCoding _geoCodingService;
+
+        // Constructor with GoogleMapsGeoCoding service injection
+        public EstateAgencyDbContext(DbContextOptions<EstateAgencyDbContext> options, GoogleMapsGeoCoding geoCodingService) : base(options) 
+        {
+            _geoCodingService = geoCodingService;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {   
@@ -23,7 +27,6 @@ namespace app.Services
         public DbSet<User> Users { get; set; }
         public DbSet<RealState> Properties { get; set; }
         public DbSet<RealStateImage> Photos { get; set; }
-
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,57 +49,80 @@ namespace app.Services
                     Password = "fullstack123"
                 }
             );
-
+            
+            // Initial data injection with coordinates retrieval
             modelBuilder.Entity<RealState>().HasData(
                 new RealState
                 {
                     Id = 1,
-                    Title = "Mansão à beira mar de Jurerê Internacional",
-                    Price = 30000,
+                    Title = "Mansão Branca",
+                    Price = 50000,
                     Neighborhood = "Jurerê Internacional",
                     BedroomQuantity = 6,
                     BusinessType = "Aluguel",
-                    Address = "Rua dos Tambaquis, 100, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
+                    Address = "Rodovia Jornalista Maurício Sirotsky Sobrinho, 5145, Jurerê, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rodovia Jornalista Maurício Sirotsky Sobrinho, 5145, Jurerê, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rodovia Jornalista Maurício Sirotsky Sobrinho, 5145, Jurerê, Florianópolis, Santa Catarina, Brasil").Result.Longitude
                 },
                 new RealState
                 {
                     Id = 2,
-                    Title = "Apartamento na Beira Mar de Florianópolis",
-                    Price = 150000,
-                    Neighborhood = "Agronômica",
+                    Title = "Apartamento",
+                    Price = 650000,
+                    Neighborhood = "Canasvieiras",
                     BedroomQuantity = 3,
                     BusinessType = "Venda",
-                    Address = "Avenida Governador Irineu Bornhausen, 3600, Agronômica, Florianópolis, Santa Catarina, Brasil",
+                    Address = "Rodovia Tertuliano Brito Xavier, 3100, Canasvieiras, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rodovia Tertuliano Brito Xavier, 3100, Canasvieiras, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rodovia Tertuliano Brito Xavier, 3100, Canasvieiras, Florianópolis, Santa Catarina, Brasil").Result.Longitude
                 },
                 new RealState
                 {
                     Id = 3,
-                    Title = "Casa em Jurerê",
-                    Price = 300000,
-                    Neighborhood = "Jurerê",
-                    BedroomQuantity = 5,
-                    BusinessType = "Venda",
-                    Address = "Rua dos Tambaquis, 100, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
-                },
-                new RealState
-                {
-                    Id = 4,
-                    Title = "Mansão",
+                    Title = "Casa Azul",
                     Price = 3000000,
                     Neighborhood = "Jurerê",
                     BedroomQuantity = 5,
                     BusinessType = "Venda",
-                    Address = "Avenida dos Buzios, 55, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
+                    Address = "Rua dos Tambaquis, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rua dos Tambaquis, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rua dos Tambaquis, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Longitude
+                },
+                new RealState
+                {
+                    Id = 4,
+                    Title = "Mansão Amarela",
+                    Price = 5000000,
+                    Neighborhood = "Jurerê",
+                    BedroomQuantity = 5,
+                    BusinessType = "Venda",
+                    Address = "Rua das Tibiras, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rua das Tibiras, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rua das Tibiras, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Longitude
                 },
                 new RealState
                 {
                     Id = 5,
                     Title = "Casa",
-                    Price = 300000,
+                    Price = 30000,
                     Neighborhood = "Jurerê",
                     BedroomQuantity = 3,
                     BusinessType = "Aluguel",
                     Address = "Rua das Algas, 488, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rua das Algas, 488, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rua das Algas, 488, Jurerê Internacional, Florianópolis, Santa Catarina, Brasil").Result.Longitude
+                },
+                new RealState
+                {
+                    Id = 6,
+                    Title = "Casa na praia",
+                    Price = 1000000,
+                    Neighborhood = "Canasvieiras",
+                    BedroomQuantity = 3,
+                    BusinessType = "Venda",
+                    Address = "Rodovia Tertuliano Brito Xavier, 3000, Canasvieiras, Florianópolis, Santa Catarina, Brasil",
+                    Latitude = _geoCodingService.GetCoordinates("Rodovia Tertuliano Brito Xavier, 3000, Canasvieiras, Florianópolis, Santa Catarina, Brasil").Result.Latitude,
+                    Longitude = _geoCodingService.GetCoordinates("Rodovia Tertuliano Brito Xavier, 3000, Canasvieiras, Florianópolis, Santa Catarina, Brasil").Result.Longitude
                 }
             );
 
@@ -172,6 +198,24 @@ namespace app.Services
                     Id = 12,
                     ImageFileName = "casa12.jpeg",
                     RealStateId = 5
+                },
+                new RealStateImage
+                {
+                    Id = 13,
+                    ImageFileName = "casa13.jpeg",
+                    RealStateId = 6
+                },
+                new RealStateImage
+                {
+                    Id = 14,
+                    ImageFileName = "casa14.jpeg",
+                    RealStateId = 6
+                },
+                new RealStateImage
+                {
+                    Id = 15,
+                    ImageFileName = "casa15.jpeg",
+                    RealStateId = 6
                 }
             );
 

@@ -1,5 +1,6 @@
 using app.Models;
 using app.Services;
+using app.Utilites.GeoCoding;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -21,12 +22,12 @@ namespace app.Pages.Admin.Properties
 
         public void OnGet()
         {
-
+            ViewData["GoogleMapsScriptUrl"] = $"https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMapEdit&uniqueId={Guid.NewGuid()}";
         }
 
         public string errorMessage = "";
         public string successMessage = "";
-        public void OnPost()
+        public async Task OnPost()
         {
             if (RealStateDTO.ImageFile == null)
             {
@@ -44,14 +45,15 @@ namespace app.Pages.Admin.Properties
             // Salva o arquivo da imagem
             foreach (var file in RealStateDTO.ImageFile!)
             {   
-               string newFileName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                newFileName += Path.GetExtension(file.FileName);
+                string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                // newFileName += Path.GetExtension(file.FileName);
 
                 string imageFullPath = environment.WebRootPath + "/photos/" + newFileName;
                 using (var stream = System.IO.File.Create(imageFullPath))
                 {
-                   file.CopyTo(stream);
+                   await file.CopyToAsync(stream);
                 }
+
                 images.Add(new RealStateImage(){
                     ImageFileName = newFileName
                 });
@@ -69,9 +71,16 @@ namespace app.Pages.Admin.Properties
                 RealStateImages = images // Associate the imagens to the property
     
             };
+            
+            var coordenates = await new GoogleMapsGeoCoding().GetCoordinates(realState.Address);
+
+            if (coordenates != null) {
+                realState.Latitude = coordenates.Latitude;
+                realState.Longitude = coordenates.Longitude;
+            }
 
             context.Properties.Add(realState);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             // Limpa o formulário
             RealStateDTO.Title = "";

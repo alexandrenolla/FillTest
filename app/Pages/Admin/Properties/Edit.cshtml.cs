@@ -52,9 +52,12 @@ namespace app.Pages.Admin.Properties
             RealStateDTO.Address = property.Address;
 
             RealState = property;
+            
+            // Identificador exclusivo para a URL do script do Google Maps parar de bugar com o cache do navegador
+            ViewData["GoogleMapsScriptUrl"] = $"https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMapEdit&uniqueId={Guid.NewGuid()}";
         }
 
-        public void OnPost(int? id)
+        public async Task OnPost(int? id)
         {
             if (id == null)
             {
@@ -82,13 +85,12 @@ namespace app.Pages.Admin.Properties
             {
                 foreach (var file in RealStateDTO.ImageFile!)
                 {   
-                    string newFileName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                    newFileName += Path.GetExtension(file.FileName);
+                    string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
                     string imageFullPath = environment.WebRootPath + "/photos/" + newFileName;
                     using (var stream = System.IO.File.Create(imageFullPath))
                     {
-                    file.CopyTo(stream);
+                        await file.CopyToAsync(stream);
                     }
 
                     images.Add(new RealStateImage(){
@@ -106,7 +108,7 @@ namespace app.Pages.Admin.Properties
             property.Address = RealStateDTO.Address;
             property.RealStateImages = images;
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             RealState = property;
 

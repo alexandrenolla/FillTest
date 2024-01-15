@@ -23,4 +23,27 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: aliceblue;
+}
+nav, footer {
+  background-color: whitesmoke;
+}
+.card {
+  background-color: whitesmoke;
+}
+.custom-card {
+  background-color: whitesmoke;
+}
+.custom-card-img {
+  margin-top: 0px;
+  border-bottom: 1px solid #414344;
+}
+.btn-search {
+  margin-top: 5px;
+  transition: color 0.25s, border-color 0.25s, box-shadow 0.25s,transform 0.25s;
+}
+.btn-search:hover {
+  box-shadow: 0 0.5em 0.5em -0.4em #f1ff5c;
+  transform: translateY(-0.25em);
+  cursor: pointer;
 }
