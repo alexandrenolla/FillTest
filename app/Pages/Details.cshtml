@@ -21,11 +21,13 @@
                         </div>
                     }
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel"
+                    data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel"
+                    data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -34,7 +36,8 @@
         <div class="col-md-4" id="details">
             <h3>@Model.Property.Title</h3>
             <p>
-                <strong>Price:</strong> @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}", Model.Property.Price))<br />
+                <strong>Price:</strong> @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}",
+                Model.Property.Price))<br />
                 <strong>Neighborhood:</strong> @Model.Property.Neighborhood<br />
                 <strong>Type:</strong> @Model.Property.BusinessType<br />
                 <strong>Rooms:</strong> @Model.Property.BedroomQuantity<br />
@@ -63,6 +66,19 @@
 
             // Single marker location, latitude, and longitude for the detailed property
             var marker = ['@Model.Property.Address', @Model.Property.Latitude, @Model.Property.Longitude];
+            console.log(marker);
+            if (marker.length === 5) {
+                var latitude = marker[1].toString() + "." + marker[2].toString().replace(/\./g, '')
+                var latitudeNumber = parseFloat(latitude.substring(0, 8));
+
+                var longitude = marker[3].toString() + "." + marker[4].toString().replace(/\./g, '')
+                var longitudeNumber = parseFloat(longitude.substring(0, 8));
+
+            }
+            else if (marker.length === 3){
+                var latitudeNumber = marker[1]
+                var longitudeNumber = marker[2]
+            }
 
             // Info window content for the detailed property
             var infoWindowContent = ['<div class="info_content">' +
@@ -74,7 +90,7 @@
             ];
 
             // Add the marker to the map
-            var infoWindow = new google.maps.InfoWindow(), position = new google.maps.LatLng(marker[1], marker[2]);
+            var infoWindow = new google.maps.InfoWindow(), position = new google.maps.LatLng(latitudeNumber, longitudeNumber);
             bounds.extend(position);
             var detailedMarker = new google.maps.Marker({
                 position: position,
@@ -102,6 +118,7 @@
             initMapDetails();
         };
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMapDetails"
-            async defer></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMapDetails"
+        async defer></script>
 }

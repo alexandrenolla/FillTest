@@ -11,7 +11,7 @@ using app.Services;
 namespace app.Migrations
 {
     [DbContext(typeof(EstateAgencyDbContext))]
-    [Migration("20240115100540_Initial")]
+    [Migration("20240115234300_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

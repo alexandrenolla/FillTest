@@ -28,15 +28,17 @@
 </form>
 
 <div class="card-container row">
-    @foreach(var realState in Model.Properties)
+    @foreach (var realState in Model.Properties)
     {
         <div class="col-md-4 mb-4">
             <div class="card shadow">
-                <img src="~/photos/@realState.RealStateImages.FirstOrDefault()?.ImageFileName" alt="Real Estate Image" class="card-img-top custom-card-img">
+                <img src="~/photos/@realState.RealStateImages.FirstOrDefault()?.ImageFileName" alt="Real Estate Image"
+                    class="card-img-top custom-card-img">
                 <div class="card-body">
                     <h5 class="card-title">@realState.Title</h5>
                     <p class="card-text">
-                        Price: @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}", realState.Price))<br />
+                        Price: @(string.Format(new System.Globalization.CultureInfo("pt-BR"), "{0:C2}",
+                     realState.Price))<br />
                         Neighborhood: @realState.Neighborhood<br />
                         <a class="btn btn-sm mt-2 btn-details" href="/Details?id=@realState.Id">Details</a>
                     </p>
@@ -52,15 +54,13 @@
 }
 
 <div class="text-center">
-    <a asp-page="./Index"
-    asp-route-pageIndex="@(Model.Properties.PageIndex - 1)"
-    class="btn btn-primary btn-pagination @prevDisabled">
-    Previous
+    <a asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex - 1)"
+        class="btn btn-primary btn-pagination @prevDisabled">
+        Previous
     </a>
-    <a asp-page="./Index"
-    asp-route-pageIndex="@(Model.Properties.PageIndex + 1)"
-    class="btn btn-primary btn-pagination @nextDisabled">
-    Next
+    <a asp-page="./Index" asp-route-pageIndex="@(Model.Properties.PageIndex + 1)"
+        class="btn btn-primary btn-pagination @nextDisabled">
+        Next
     </a>
 </div>
 
@@ -74,51 +74,66 @@
             var mapOptions = {
                 mapTypeId: 'roadmap'
             };
-                            
+
             // Display a map on the web page
             map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
             map.setTilt(50);
-                
+
             // Multiple markers location, latitude, and longitude
             var markers = [
-            @foreach(var realState in Model.AllProperties)
-            {
-                @Html.Raw($"['{realState.Address}', {realState.Latitude}, {realState.Longitude}],")
-            }
-            ];
+        @foreach (var realState in Model.AllProperties)
+        {
+            @Html.Raw($"['{realState.Address}', {realState.Latitude}, {realState.Longitude}],")
+        }
+                    ];
 
-                                
+
             // Info window content
             var infoWindowContent = [
-            @foreach(var realState in Model.AllProperties)
-            {
-                <text>
-                    ['<div class="info_content">' +
-                    '<h5>@realState.Title</h5>' +
-                    '<h6>Type: @realState.BusinessType</h6>' +
-                    '<h6>Rooms: @realState.BedroomQuantity</h6>' +
-                    '<h7>@realState.Address</h7>' +
-                    '</div>'],
-                </text>
-            }
-            ];
+        @foreach (var realState in Model.AllProperties)
+        {
+            <text>
+                        ['<div class="info_content">' +
+                            '<h5>@realState.Title</h5>' +
+                            '<h6>Type: @realState.BusinessType</h6>' +
+                            '<h6>Rooms: @realState.BedroomQuantity</h6>' +
+                            '<h7>@realState.Address</h7>' +
+                            '</div>'],
+            </text>
+        }
+                    ];
 
             // Add multiple markers to map
             var infoWindow = new google.maps.InfoWindow(), marker, i;
-            
+
             // Place each marker on the map  
-            for( i = 0; i < markers.length; i++ ) {
-                var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+            for (i = 0; i < markers.length; i++) {
+
+                if (markers[i] && markers[i].length === 5) {
+                    var latitude = markers[i][1].toString() + "." + markers[i][2].toString().replace(/\./g, '')
+                    var latitudeNumber = parseFloat(latitude.substring(0, 8));
+
+                    var longitude = markers[i][3].toString() + "." + markers[i][4].toString().replace(/\./g, '')
+                    var longitudeNumber = parseFloat(longitude.substring(0, 8));
+                }
+                else if (markers[i].length === 3) {
+                    var latitudeNumber = markers[i][1];
+                    var longitudeNumber = markers[i][2];
+                }
+
+                var position = new google.maps.LatLng(latitudeNumber, longitudeNumber);
+
+
                 bounds.extend(position);
                 marker = new google.maps.Marker({
                     position: position,
                     map: map,
                     title: markers[i][0]
                 });
-                
+
                 // Add info window to marker    
-                google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                    return function() {
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    return function () {
                         infoWindow.setContent(infoWindowContent[i][0]);
                         infoWindow.open(map, marker);
                     }
@@ -129,14 +144,15 @@
             }
 
             // Set zoom level
-            var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+            var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function (event) {
                 this.setZoom(14);
                 google.maps.event.removeListener(boundsListener);
             });
         }
 
-    window.initMap = initMap;
-    
+        window.initMap = initMap;
+
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXMVMKpFlxF1uHhrjzFzSlh3VfrTKTV6A&callback=initMap" async
+        defer></script>
 }
